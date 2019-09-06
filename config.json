@@ -1,0 +1,260 @@
+{
+    "name": "Form Reviewer",
+
+    "namespace": "Einstein\\FormReviewer",
+
+    "framework-version": 2, 
+
+    "description": "This module allows you to embed a saved form into a review form by these methods: 1) Embed an inline PDF of the saved form. 2) Include download links to files uploaded to the saved form.",
+
+    "authors": [
+        {
+             "name": "Vishnu Raju",
+             "email": "datla.raju@einstein.yu.edu",
+             "institution": "Albert Einstein College of Medicine"
+         }
+     ],
+
+     "permissions": [
+        "redcap_data_entry_form",
+        "redcap_data_entry_form_top",
+        "redcap_survey_page",
+        "redcap_survey_page_top"
+     ],
+
+     "compatibility": {
+        "php-version-min": "",
+        "php-version-max": "",
+        "redcap-version-min": "9.1.1",
+        "redcap-version-max": ""
+     },
+
+     "project-settings": [
+       {  
+        "name": "Review Form Settings",
+        "key": "review-mapping",
+        "type": "sub_settings",
+        "repeatable": true,
+        "sub_settings": [         
+        {
+            "key": "project-mapping-desc",
+            "name": "<b>Source project mapping<b>",
+            "type": "descriptive"
+        },    
+        {
+            "key": "source-project",
+            "name": "Source project to review",
+            "required": true,
+            "type": "project-id",
+            "repeatable": false
+        },          
+        {
+            "key": "source-form-name",
+            "name": "Source form to review (Ex: my_first_instrument)",
+            "required": true,
+            "type": "text"
+        }, 
+        {
+            "key": "reviewer-form-name",
+            "name": "Review form",
+            "required": true,
+            "type": "form-list"
+        },
+        {
+            "key": "record-link",
+            "name": "Field that links to source form's record number",
+            "required": true,
+            "type": "field-list",
+            "repeatable": false
+        },
+        {
+            "key": "longitudinal",
+            "name": "Is the source project longitudinal?",
+            "required": true,
+            "type": "radio",
+            "choices": [
+                {
+                    "value":"yes",
+                    "name":"Yes"
+                },
+                {
+                    "value":"no",
+                    "name":"No"
+                }                
+            ]
+        },
+        {
+            "key": "event-link",
+            "name": "Field containing source form's unique event name (Ex: baseline_arm_1)",
+            "required": true,
+            "type": "field-list",
+            "repeatable": false,
+            "branchingLogic": {
+                "field": "longitudinal",
+                "value": "yes"
+            }   
+        },                        
+        {
+            "key": "pdf-options-desc",
+            "name": "<b>PDF embedding options<b>",
+            "type": "descriptive"
+        },                         
+        {
+            "key": "embed-pdf",
+            "name": "Embed a PDF of the source form in the reviewer form?",
+            "required": false,
+            "type": "checkbox",
+            "repeatable": false
+        },
+        {   
+            "key": "pdf-placement",
+            "name": "Where on the review form would you like to place the embedded PDF?",
+            "type": "radio",
+            "required": true,
+            "choices": [
+                {
+                    "value":"top",
+                    "name":"top"
+                },
+                {
+                    "value":"bottom",
+                    "name":"bottom"
+                }                
+            ],
+            "branchingLogic": {
+                "field": "embed-pdf",
+                "value": "1"
+            }            
+        },
+        {
+            "key": "file-options-desc",
+            "name": "<b>File upload fields options<b>",
+            "type": "descriptive"
+        },                                               
+        {
+            "key": "include-files",
+            "name": "Provide download links for files uploaded to source form?",
+            "required": false,
+            "type": "checkbox",
+            "repeatable": false
+        },
+        {
+            "key": "files-formatting",
+            "name": "Where would you like to insert the files?",
+            "required": false,
+            "type": "radio",
+            "repeatable": false,
+            "choices":[
+                {
+                    "name":"In a table",
+                    "value":"table"
+                },
+                {
+                    "name":"In a field label",
+                    "value":"label"
+                }                
+            ],
+            "branchingLogic": {
+                "field": "include-files",
+                "value": "1"
+            }
+        },
+        {
+            "key": "file-table-placement",
+            "name": "Where would like to place the table of files?",
+            "required": true,
+            "type": "radio",
+            "choices": [
+                {
+                    "value":"top",
+                    "name":"top"
+                },
+                {
+                    "value":"bottom",
+                    "name":"bottom"
+                }                
+            ],
+            "repeatable": false,
+            "branchingLogic": {
+                "type": "and",
+                "conditions":[
+                    {
+                        "field": "files-formatting",
+                        "value": "table"
+                    },
+                    {
+                        "field": "include-files",
+                        "value": "1"
+                    },
+                    {
+                        "field": "embed-pdf",
+                        "value": "0"
+                    }
+                ]
+            }
+        },        
+        {
+            "key": "field-label-insert",
+            "name": "Field label to insert file attachments",
+            "required": true,
+            "type": "field-list",
+            "repeatable": false,
+            "branchingLogic": {
+                "type": "and",
+                "conditions":[
+                    {
+                        "field": "files-formatting",
+                        "value": "label"
+                    },
+                    {
+                        "field": "include-files",
+                        "value": "1"
+                    }
+                ]
+            }
+        },          
+        {
+            "key": "include-files-portion",
+            "name": "Include all file upload fields or a subset?",
+            "required": false,
+            "type": "radio",
+            "repeatable": false,
+            "choices":[
+                {
+                    "name":"All",
+                    "value":"all"
+                },
+                {
+                    "name":"Subset",
+                    "value":"subset"
+                }                
+            ],
+            "branchingLogic": {
+                "field": "include-files",
+                "value": "1"
+            }
+        },
+        {
+            "key": "file-upload-fields",
+            "name": "File Upload Field Name",
+            "required": true,
+            "type": "text",
+            "repeatable": true,
+            "branchingLogic": {
+                "type": "and",
+                "conditions": [
+                    {
+                        "field": "include-files-portion",
+                        "value": "subset"
+                    },
+                    {
+                        "field": "include-files",
+                        "value": "1"
+                    }
+                ]
+            }
+        }                
+      ]
+    }
+  ]
+ }
